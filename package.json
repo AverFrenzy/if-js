@@ -1,0 +1,25 @@
+{
+  "name": "husky-lint",
+  "version": "1.0.0",
+  "description": "husky-lint",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint --fix index.js ",
+    "prepare" : "husky install"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/AverFrenzy/if-js.git"
+  },
+  "author": "Nikita",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/AverFrenzy/if-js/issues"
+  },
+  "homepage": "https://github.com/AverFrenzy/if-js#readme",
+  "devDependencies": {
+    "eslint": "^7.31.0",
+    "husky": "^7.0.1"
+  }
+}
