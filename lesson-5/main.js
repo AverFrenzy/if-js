@@ -19,9 +19,6 @@ text2.addEventListener('click', changeTextColor.bind(null, text2))
 text3.addEventListener('click', changeTextColor.bind(null, text3))
 
 // Function that sum two numbers (made with closure)
-const sum = (a) => {
-  return ((b) => {
-    return a + b
-  })
-}
+const sum = (a) => (b) => a + b
+
 console.log(sum(5)(2));
