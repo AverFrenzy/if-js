@@ -1,4 +1,4 @@
-// Полиндром через цикл
+// Function that checks if word is a polindrome(made with cycle and conditions)
 const polindrome = (str) => {
   for (let i = 0; i < str.length / 2; i++) {
     const firstSymbol = str[i]
@@ -9,7 +9,7 @@ const polindrome = (str) => {
   }
   return true
 }
-// Поигрался и сделал полиндром через рекурсию
+// Function that checks if word is a polindrome(made with recursion)
 const polindromRecursion = (str, n) => {
     if (n > str.length / 2) {
         return true
@@ -21,43 +21,29 @@ const polindromRecursion = (str, n) => {
     }
     return false
 }
-
-// Функция которая из двух чисел выбирает большее,если числа равны вадает строку что они равны
-const max = (a,b) => {
-  if (a > b) {
-    return a
-  }
-  else if (b > a) {
-    return b
-  }
-  else (a = b) 
-    return 'Numbers are equal'
+// Function that checks if word is a polindrome(made with array methods)
+function polindromReverse(word) {
+  return word === word.split("").reverse().join("");
 }
 
-// Функция которая из двух чисел выбирает меньшее,если числа равны вадает строку что они равны
-const min = (a,b) => {
-  if (a < b) {
-    return a
-  }
-  else if (b < a) {
-    return b
-  }
-  else (a = b) 
-    return 'Numbers are equal'
-}
+// Function that choose the biggest number 
+const max = (a,b) => a > b ? a : b
 
-// Функция которая возвращает новый массив с замененными нулями на zero
+// Function that choose the lowest number 
+const min = (a,b) => a < b ? a : b
+
+// Function that returns new array and change 0 on 'zero' in new array
 const numbers = [10 , 13, 6, 10, 8, 20, 43, 50, 100, 25]
-const result = numbers.map ((number) => {
-  let str = '' + number
-  if (str.includes('00')) {
-    return str.replace('00', 'zerozero')
-  }
-  else if (str.includes('0')) {
-    return str.replace('0', 'zero')
-  }
-  else {
-    return number
-  }
-})
-console.log(result)
+const changeZero = (numbers) => {
+  return numbers.map ((number) => {
+    let str = '' + number
+    if (str.includes('0')) {
+      return str.replaceAll('0', 'zero')
+    }
+    else {
+      return number
+    }
+  })
+}
+console.log(changeZero(numbers))
+console.log(numbers)
