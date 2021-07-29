@@ -34,16 +34,8 @@ const min = (a,b) => a < b ? a : b
 
 // Function that returns new array and change 0 on 'zero' in new array
 const numbers = [10 , 13, 6, 10, 8, 20, 43, 50, 100, 25]
-const changeZero = (numbers) => {
-  return numbers.map ((number) => {
-    let str = '' + number
-    if (str.includes('0')) {
-      return str.replaceAll('0', 'zero')
-    }
-    else {
-      return number
-    }
-  })
-}
+const changeZero = (numbers) => numbers.map((number) => String(number).includes('0') ? String(number).replaceAll('0', 'zero') : number);
+
 console.log(changeZero(numbers))
 console.log(numbers)
+
