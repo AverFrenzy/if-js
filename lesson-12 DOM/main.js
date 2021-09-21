@@ -49,40 +49,30 @@ const data = [
   },
 ];
 
+let homesItem = ''
+
+data.forEach(elem => {
+  homesItem +=
+   `
+    <div class="homes__item">
+      <div class="homes__img-wrapper">
+        <img src="${elem.imageUrl}">
+      </div>
+        <span class="homes__aparts-name">${elem.name}</span>
+        <span class="homes__aparts-location">${elem.city}, ${elem.country}</span>
+    </div>
+   `
+})
 
 const mainContainer = document.createElement('div')
 mainContainer.className = 'container'
-const homesContainer = document.createElement('div')
-homesContainer.className = 'homes'
-const homesImgContainer = document.createElement('div')
-homesImgContainer.className = 'homes__img-container'
-const header = document.createElement('h2')
-header.className = 'homes__heading'
-header.textContent = 'Homes guests loves'
-
-mainContainer.appendChild(homesContainer)
-mainContainer.appendChild(header)
-mainContainer.appendChild(homesImgContainer)
-
-
-data.forEach(elem => {
-  const homesItem = document.createElement('div') 
-  homesItem.className = 'homes__item'
-  const homesImgWrapper = document.createElement('div')
-  homesImgWrapper.className = 'homes__img-wrapper'
-  const homesImg = document.createElement('img')
-  const homesAppartName = document.createElement('span')
-  homesAppartName.className = 'homes__aparts-name'
-  const homesAppartLocation = document.createElement('span')
-  homesAppartLocation.className = 'homes__aparts-location'
-  homesImgContainer.appendChild(homesItem)
-  homesItem.appendChild(homesImgWrapper)
-  homesImgWrapper.appendChild(homesImg)
-  homesItem.appendChild(homesAppartName)
-  homesItem.appendChild(homesAppartLocation)
-  homesAppartLocation.textContent = `${elem.city}, ${elem.country}`
-  homesAppartName.textContent = `${elem.name}`
-  homesImg.setAttribute('src', elem.imageUrl)
-})
-
+mainContainer.innerHTML =
+`
+  <div class="homes">
+    <h2 class="homes__heading">Homes guests loves</h2>
+    <div class="homes__img-container" id="hh">
+      ${homesItem}
+    </div>
+  </div>
+` 
 document.body.appendChild(mainContainer)
