@@ -1,5 +1,5 @@
 const searchFormOtherInfo = document.getElementById('adults-children-rooms')
-const mainPageDiv = document.querySelector('.main-page')
+const mainPageDiv = document.getElementById('main-page')
 
 const optionsData = [
   {
@@ -16,6 +16,7 @@ const optionsData = [
   }
 ]
 
+
 const labelInfoText = document.getElementById('option-adults-children-rooms')
 labelInfoText.innerHTML =
   `${optionsData[0].optionNumber} ${optionsData[0].optionType} — ${optionsData[1].optionNumber} ${optionsData[1].optionType} — ${optionsData[2].optionNumber} ${optionsData[2].optionType}`
@@ -24,15 +25,13 @@ labelInfoText.innerHTML =
 const createOptionsDiv = (e) => {
   const optionsDiv = document.createElement('div')
   optionsDiv.classList.add('options')
-  const optionsItems = document.createElement('div')
-  optionsItems.classList.add('options-items')
-  optionsDiv.appendChild(optionsItems)
-  const optionsTextDiv = document.createElement('div')
-  optionsTextDiv.classList.add('options-text-div')
-  const optionsSelectItems = document.createElement('div')
-  optionsSelectItems.classList.add('options-select-items')
-  optionsDiv.appendChild(optionsTextDiv)
-  optionsDiv.appendChild(optionsSelectItems)
+  optionsDiv.setAttribute('id', 'options')
+  optionsDiv.innerHTML =
+    `
+      <div class="options-items" id="options-items"></div>
+      <div class="options-text-div" id="options-text-div"></div>
+      <div class="options-select-items" id="options-select-items"></div>
+    `
   mainPageDiv.appendChild(optionsDiv)
   createOptions()
   searchFormOtherInfo.removeEventListener('click', createOptionsDiv)
@@ -47,132 +46,142 @@ const createOptionsDiv = (e) => {
 
 const createOptions = () => {
   optionsData.forEach((elem, index) => {
-    const optionsItems = document.querySelector('.options-items')
+    const optionsItems = document.getElementById('options-items')
     const optionsItem = document.createElement('div')
     optionsItem.classList.add('options-item')
-    const optionsDescription = document.createElement('div')
-    const optionsDescriptionText = document.createElement('span')
-    optionsDescriptionText.textContent = `${elem.optionType}`
-    const optionsItemButtons = document.createElement('div')
-    optionsItemButtons.classList.add('options-item-buttons')
-    const optionsPlusButton = document.createElement('button')
-    optionsPlusButton.classList.add('options-button', 'options-plus-button')
-    optionsPlusButton.textContent = '+'
-    optionsPlusButton.setAttribute('data-num', index)
-    const optionsNumber = document.createElement('span')
-    optionsNumber.classList.add('options-number')
-    optionsNumber.textContent = `${elem.optionNumber}`
-    const optionsMinusButton = document.createElement('button')
-    optionsMinusButton.classList.add('options-button', 'options-minus-button')
-    optionsMinusButton.textContent = '—'
-    optionsMinusButton.setAttribute('data-num', index)
+    optionsItem.innerHTML =
+      `
+        <div class="options-description-text">
+          <span>${elem.optionType}</span>
+        </div>
+        <div class="options-item-buttons">
+          <button class="options-button options-minus-button_js" id="options-minus-button-${index}" type="submit" data-num="${index}">—</button>
+          <span class="options-counter-number">${elem.optionNumber}</span>
+          <button class="options-button options-plus-button_js" id="options-plus-button-${index}" type="submit" data-num="${index}">+</button>
+        </div>
+      `
     optionsItems.appendChild(optionsItem)
-    optionsItem.appendChild(optionsDescription)
-    optionsDescription.appendChild(optionsDescriptionText)
-    optionsItem.appendChild(optionsItemButtons)
-    optionsItemButtons.appendChild(optionsMinusButton)
-    optionsItemButtons.appendChild(optionsNumber)
-    optionsItemButtons.appendChild(optionsPlusButton)
-    optionsPlusButton.addEventListener('click', addOne)
-    optionsMinusButton.addEventListener('click', removeOne)
+    document.getElementById(`options-plus-button-${index}`).addEventListener('click', addOne)
+    document.getElementById(`options-minus-button-${index}`).addEventListener('click', removeOne)
     if (elem.optionNumber === 0) {
-      optionsMinusButton.setAttribute('disabled', 'disabled')
+      document.getElementById(`options-minus-button-${index}`).setAttribute('disabled', 'disabled')
     }
   })
 }
 
 
 const addOne = (e) => {
-  if (optionsData[e.target.dataset.num].optionNumber > -1) {
-    const button = document.querySelectorAll('.options-minus-button')[e.target.dataset.num]
-    button.removeAttribute('disabled', 'disabled')
+  const buttonDataSetIndex = e.target.dataset.num
+  if (optionsData[buttonDataSetIndex].optionNumber > -1) {
+    const optionsMinusButton = document.querySelectorAll('.options-minus-button_js')[buttonDataSetIndex]
+    optionsMinusButton.removeAttribute('disabled', 'disabled')
   }
-  if (e.target.dataset.num == 0) {
-    if (optionsData[0].optionNumber < 30) {
-      optionsData[e.target.dataset.num].optionNumber++
-    }
-    if (optionsData[0].optionNumber === 30) {
-      const button = document.querySelectorAll('.options-plus-button')[e.target.dataset.num]
-      button.setAttribute('disabled', 'disabled')
-    }
+  if (buttonDataSetIndex == 0) {
+    addOneAdult(buttonDataSetIndex)
   }
-  if (e.target.dataset.num == 1) {
-    if (optionsData[1].optionNumber < 10) {
-      optionsData[e.target.dataset.num].optionNumber++
-      if (optionsData[1].optionNumber === 1) {
-        addChildrenAgeQuestion()
-      }
-      addChildrenAge()
-    }
-    if (optionsData[1].optionNumber === 10) {
-      const button = document.querySelectorAll('.options-plus-button')[e.target.dataset.num]
-      button.setAttribute('disabled', 'disabled')
-    }
+  if (buttonDataSetIndex == 1) {
+    addOneChild(buttonDataSetIndex)
   }
-  if (e.target.dataset.num == 2) {
-    if (optionsData[2].optionNumber < 30) {
-      optionsData[e.target.dataset.num].optionNumber++
-    }
-    if (optionsData[2].optionNumber === 30) {
-      const button = document.querySelectorAll('.options-plus-button')[e.target.dataset.num]
-      button.setAttribute('disabled', 'disabled')
-    }
+  if (buttonDataSetIndex == 2) {
+    addOneRoom(buttonDataSetIndex)
   }
-  redrawOptionNumber(e.target.dataset.num)
+  refreshOptionsCounterNumber(buttonDataSetIndex)
+}
+
+
+const addOneAdult = (buttonDataSetIndex) => {
+  if (optionsData[0].optionNumber < 30) {
+    optionsData[buttonDataSetIndex].optionNumber++
+  }
+  if (optionsData[0].optionNumber === 30) {
+    const optionsPlusButton = document.querySelectorAll('.options-plus-button_js')[buttonDataSetIndex]
+    optionsPlusButton.setAttribute('disabled', 'disabled')
+  }
+}
+
+
+const addOneChild = (buttonDataSetIndex) => {
+  if (optionsData[1].optionNumber < 10) {
+    optionsData[buttonDataSetIndex].optionNumber++
+    if (optionsData[1].optionNumber === 1) {
+      addChildrenAgeQuestion()
+    }
+    addChildrenAge()
+  }
+  if (optionsData[1].optionNumber === 10) {
+    const optionsPlusButton = document.querySelectorAll('.options-plus-button_js')[buttonDataSetIndex]
+    optionsPlusButton.setAttribute('disabled', 'disabled')
+  }
+}
+
+
+const addOneRoom = (buttonDataSetIndex) => {
+  if (optionsData[2].optionNumber < 30) {
+    optionsData[buttonDataSetIndex].optionNumber++
+  }
+  if (optionsData[2].optionNumber === 30) {
+    const optionsPlusButton = document.querySelectorAll('.options-plus-button_js')[buttonDataSetIndex]
+    optionsPlusButton.setAttribute('disabled', 'disabled')
+  }
 }
 
 
 const removeOne = (e) => {
-  if (optionsData[e.target.dataset.num].optionNumber <= 1) {
-    const button = document.querySelectorAll('.options-minus-button')[e.target.dataset.num]
-    button.setAttribute('disabled', 'disabled')
+  const buttonDataSetIndex = e.target.dataset.num
+  if (optionsData[buttonDataSetIndex].optionNumber <= 1) {
+    const optionsMinusButton = document.querySelectorAll('.options-minus-button_js')[buttonDataSetIndex]
+    optionsMinusButton.setAttribute('disabled', 'disabled')
   }
-  if (optionsData[e.target.dataset.num].optionNumber > 0) {
-    optionsData[e.target.dataset.num].optionNumber--
+  if (optionsData[buttonDataSetIndex].optionNumber > 0) {
+    optionsData[buttonDataSetIndex].optionNumber--
   }
-  if (e.target.dataset.num == 0 && optionsData[0].optionNumber < 30) {
-    const button = document.querySelectorAll('.options-plus-button')[e.target.dataset.num]
-    button.removeAttribute('disabled', 'disabled')
+  if (buttonDataSetIndex == 0 && optionsData[0].optionNumber < 30) {
+    const optionsPlusButton = document.querySelectorAll('.options-plus-button_js')[buttonDataSetIndex]
+    optionsPlusButton.removeAttribute('disabled', 'disabled')
   }
-  if (e.target.dataset.num == 1) {
-    if (optionsData[1].optionNumber === 0) {
-      removeChildrenAgeQuestion()
-    }
-    if (optionsData[1].optionNumber > -1) {
-      removeChildrenAge()
-    }
-    if (optionsData[1].optionNumber < 10) {
-      const button = document.querySelectorAll('.options-plus-button')[e.target.dataset.num]
-      button.removeAttribute('disabled', 'disabled')
-    }
+  if (buttonDataSetIndex == 1) {
+    removeOneChild(buttonDataSetIndex)
   }
-  if (e.target.dataset.num == 2 && optionsData[1].optionNumber < 30) {
-    const button = document.querySelectorAll('.options-plus-button')[e.target.dataset.num]
-    button.removeAttribute('disabled', 'disabled')
+  if (buttonDataSetIndex == 2 && optionsData[1].optionNumber < 30) {
+    const optionsPlusButton = document.querySelectorAll('.options-plus-button_js')[buttonDataSetIndex]
+    optionsPlusButton.removeAttribute('disabled', 'disabled')
   }
-  redrawOptionNumber(e.target.dataset.num)
+  refreshOptionsCounterNumber(buttonDataSetIndex)
 }
 
 
-const redrawOptionNumber = (buttonNumber) => {
-  const optionNumber = document.querySelectorAll('.options-number')[buttonNumber]
-  optionNumber.textContent = optionsData[buttonNumber].optionNumber
+const removeOneChild = (buttonDataSetIndex) => {
+  if (optionsData[1].optionNumber === 0) {
+    removeChildrenAgeQuestion()
+  }
+  if (optionsData[1].optionNumber > -1) {
+    removeChildrenAge()
+  }
+  if (optionsData[1].optionNumber < 10) {
+    const optionsPlusButton = document.querySelectorAll('.options-plus-button_js')[buttonDataSetIndex]
+    optionsPlusButton.removeAttribute('disabled', 'disabled')
+  }
+}
+
+const refreshOptionsCounterNumber = (counterDataSetIndex) => {
+  const optionCounterNumber = document.querySelectorAll('.options-counter-number')[counterDataSetIndex]
+  optionCounterNumber.textContent = optionsData[counterDataSetIndex].optionNumber
   labelInfoText.innerHTML =
     `${optionsData[0].optionNumber} ${optionsData[0].optionType} — ${optionsData[1].optionNumber} ${optionsData[1].optionType} — ${optionsData[2].optionNumber} ${optionsData[2].optionType}`
 }
 
 
 const addChildrenAgeQuestion = () => {
-  const optionsTextDiv = document.querySelector('.options-text-div')
-  const optionsText = document.createElement('span')
-  optionsText.classList.add('options-text')
-  optionsText.textContent = 'What is the age of the child you’re travelling with?'
-  optionsTextDiv.appendChild(optionsText)
+  const optionsTextDiv = document.getElementById('options-text-div')
+  optionsTextDiv.innerHTML = 
+  `
+    <span class="options-text" id="options-text">What is the age of the child you’re travelling with?</span>
+  `
 }
 
 
 const addChildrenAge = () => {
-  const optionsSelectItems = document.querySelector('.options-select-items')
+  const optionsSelectItems = document.getElementById('options-select-items')
   const optionsSelectItem = document.createElement('div')
   optionsSelectItems.appendChild(optionsSelectItem)
   optionsSelectItem.classList.add('options-select-item')
@@ -195,21 +204,21 @@ const addChildrenAge = () => {
 
 
 const removeChildrenAgeQuestion = () => {
-  const optionsTextDiv = document.querySelector('.options-text-div')
-  const optionsText = document.querySelector('.options-text')
+  const optionsTextDiv = document.getElementById('options-text-div')
+  const optionsText = document.getElementById('options-text')
   optionsTextDiv.removeChild(optionsText)
 }
 
 
 const removeChildrenAge = () => {
-  const optionsSelectItems = document.querySelector('.options-select-items')
-  const optionsSelectItem = document.querySelector('.options-select-item')
+  const optionsSelectItems = document.getElementById('options-select-items')
+  const optionsSelectItem = document.querySelector('.options-select-item:last-child')
   optionsSelectItems.removeChild(optionsSelectItem)
 }
 
 
 const removeOptions = (e) => {
-  const optionsDiv = document.querySelector('.options')
+  const optionsDiv = document.getElementById('options')
   const isOutsideOptionsBlock = optionsDiv && e.target.tagName.toLowerCase() !== 'input' && !e.target.className.includes('options')
   if (isOutsideOptionsBlock) {
     mainPageDiv.removeChild(optionsDiv)
